@@ -1,4 +1,3 @@
-
 from django.conf import settings
 from django.db import models
 
@@ -27,10 +26,10 @@ class Review(models.Model):
                 name="unique_review_per_user_per_movie",
             ),
             models.CheckConstraint(
-                condition=models.Q(rating__gte=1, rating__lte=5),
-                name="review_rating_between_1_and_5",
+                condition=models.Q(rating__gte=0, rating__lte=100),
+                name="review_rating_between_0_and_100",
             ),
         ]
 
     def __str__(self):
-        return f"{self.user.username} - {self.movie.title} ({self.rating}/5)"
+        return f"{self.user.username} - {self.movie.title} ({self.rating}°)"
