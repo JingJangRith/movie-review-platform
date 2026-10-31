@@ -1,0 +1,21 @@
+﻿{% extends "base.html" %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user.username }}!</h1>
+<h2>My Reviews</h2>
+
+{% if reviews %}
+    {% for review in reviews %}
+        <article>
+            <h3>{{ review.movie.title }}</h3>
+            <p>Temperature: {{ review.rating }}&deg;</p>
+            <p>{{ review.comment }}</p>
+            <p>Posted: {{ review.created_at }}</p>
+        </article>
+    {% endfor %}
+{% else %}
+    <p>You haven't written any reviews yet.</p>
+{% endif %}
+{% endblock %}
