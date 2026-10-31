@@ -23,4 +23,5 @@ urlpatterns = [
     path("dashboard/", include("dashboard.urls")),
     path("movies/", include("movies.urls")),
     path("", include("movies.urls")),
+    path("reviews/", include("reviews.urls")),
 ]
