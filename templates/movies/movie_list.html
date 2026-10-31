@@ -1,0 +1,70 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Browse Movies{% endblock %}
+
+{% block content %}
+<h1>Browse Movies</h1>
+
+<form method="get">
+    <input
+        type="text"
+        name="q"
+        placeholder="Search by title, director, or genre..."
+        value="{{ query }}"
+    >
+
+    <select name="genre">
+        <option value="">All Genres</option>
+        {% for item in genres %}
+            <option value="{{ item }}" {% if selected_genre == item %}selected{% endif %}>
+                {{ item }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <input
+        type="number"
+        name="year"
+        placeholder="Release year"
+        value="{{ selected_year }}"
+        min="1"
+    >
+
+    <button type="submit">Search / Filter</button>
+    <a href="{% url 'movie_list' %}">Clear Filters</a>
+</form>
+
+<hr>
+
+{% if movies %}
+    <p>{{ movies|length }} movie(s) found.</p>
+
+    <div class="movie-list">
+        {% for movie in movies %}
+            <article class="movie-card">
+                {% if movie.poster_url %}
+                    <img
+                        src="{{ movie.poster_url }}"
+                        alt="{{ movie.title }} poster"
+                        width="150"
+                    >
+                {% else %}
+                    <p>No poster available</p>
+                {% endif %}
+
+                <h2>
+                    <a href="{% url 'movie_detail' movie.pk %}">
+                        {{ movie.title }}
+                    </a>
+                </h2>
+
+                <p>Release year: {{ movie.release_year }}</p>
+                <p>Director: {{ movie.director }}</p>
+                <p>Genre: {{ movie.genre }}</p>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <p>No movies found. Try changing your search or filters.</p>
+{% endif %}
+{% endblock %}

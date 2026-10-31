@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<article class="movie-detail">
+    {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }} poster" width="250">
+    {% else %}
+        <p>No poster available.</p>
+    {% endif %}
+
+    <h1>{{ movie.title }}</h1>
+    <p><strong>Release Year:</strong> {{ movie.release_year }}</p>
+    <p><strong>Director:</strong> {{ movie.director }}</p>
+    <p><strong>Genre:</strong> {{ movie.genre }}</p>
+
+    <h2>Description</h2>
+    <p>{{ movie.description|linebreaks }}</p>
+
+    <hr>
+
+    <section class="movie-rating">
+        <h2>Audience Temperature</h2>
+
+        {% if average_temperature != None %}
+            <h3>{{ average_temperature }}&deg;</h3>
+            <p>Category: <strong>{{ temperature_category }}</strong></p>
+        {% else %}
+            <p>{{ temperature_category }}</p>
+        {% endif %}
+    </section>
+
+    <hr>
+
+    <h2>Reviews</h2>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <article class="review">
+                <h3>{{ review.user.username }}</h3>
+                <p><strong>Temperature:</strong> {{ review.rating }}&deg;</p>
+                <p>{{ review.comment|linebreaks }}</p>
+                <p><small>Posted: {{ review.created_at|date:"M d, Y" }}</small></p>
+            </article>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>This movie hasn't received any reviews yet.</p>
+    {% endif %}
+</article>
+
+<a href="{% url 'movie_list' %}">Back to Movies</a>
+{% endblock %}
