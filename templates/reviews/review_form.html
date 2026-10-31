@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block title %}{{ page_title }}{% endblock %} {%
+block content %}
+<h1>{{ page_title }}</h1>
+
+<h2>{{ movie.title }}</h2>
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+
+  <button type="submit">
+    {% if page_title == "Add Review" %} Add Review {% else %} Update Review {%
+    endif %}
+  </button>
+
+  <a href="{% url 'movie_detail' movie.pk %}">Cancel</a>
+</form>
+{% endblock %}
