@@ -58,6 +58,11 @@ def movie_detail(request, pk):
     reviews = movie.reviews.all()
     average = reviews.aggregate(value=Avg("rating"))["value"]
 
+    user_reviewed = False
+
+    if request.user.is_authenticated:
+        user_reviewed = reviews.filter(user=request.user).exists()
+
     if average is not None:
         average = int(
             Decimal(str(average)).quantize(
@@ -87,5 +92,6 @@ def movie_detail(request, pk):
             "reviews": reviews,
             "average_temperature": average,
             "temperature_category": temperature_category,
+            "user_reviewed": user_reviewed,
         },
     )

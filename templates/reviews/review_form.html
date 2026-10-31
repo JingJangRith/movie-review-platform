@@ -1,17 +1,47 @@
-{% extends "base.html" %} {% block title %}{{ page_title }}{% endblock %} {%
-block content %}
+{% extends "base.html" %}
+
+{% block title %}
+    {{ page_title }}
+{% endblock %}
+
+{% block content %}
 <h1>{{ page_title }}</h1>
 
 <h2>{{ movie.title }}</h2>
 
 <form method="post">
-  {% csrf_token %} {{ form.as_p }}
+    {% csrf_token %}
 
-  <button type="submit">
-    {% if page_title == "Add Review" %} Add Review {% else %} Update Review {%
-    endif %}
-  </button>
+    <p>
+        {{ form.rating.label_tag }}
+        <span id="rating-value">{{ form.rating.value|default_if_none:50 }}</span> / 100
+        {{ form.rating }}
+        {{ form.rating.errors }}
+    </p>
 
-  <a href="{% url 'movie_detail' movie.pk %}">Cancel</a>
+    <p>
+        {{ form.comment.label_tag }}
+        {{ form.comment }}
+        {{ form.comment.errors }}
+    </p>
+
+    <button type="submit">
+        {% if page_title == "Add Review" %}
+            Add Review
+        {% else %}
+            Update Review
+        {% endif %}
+    </button>
+
+    <a href="{% url 'movie_detail' movie.pk %}">Cancel</a>
 </form>
+
+<script>
+    const ratingSlider = document.getElementById("id_rating");
+    const ratingValue = document.getElementById("rating-value");
+
+    ratingSlider.addEventListener("input", function () {
+        ratingValue.textContent = ratingSlider.value;
+    });
+</script>
 {% endblock %}

@@ -10,8 +10,10 @@ class ReviewForm(forms.ModelForm):
         widgets = {
             "rating": forms.NumberInput(
                 attrs={
+                    "type": "range",
                     "min": 0,
                     "max": 100,
+                    "step": 1,
                 }
             ),
             "comment": forms.Textarea(

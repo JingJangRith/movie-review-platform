@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}{{ movie.title }}{% endblock %}
+{% block title %}
+    {{ movie.title }}
+{% endblock %}
 
 {% block content %}
 <article class="movie-detail">
     {% if movie.poster_url %}
-        <img src="{{ movie.poster_url }}" alt="{{ movie.title }} poster" width="250">
+        <img
+            src="{{ movie.poster_url }}"
+            alt="{{ movie.title }} poster"
+            width="250"
+        >
     {% else %}
         <p>No poster available.</p>
     {% endif %}
@@ -35,13 +41,35 @@
 
     <h2>Reviews</h2>
 
+    {% if user.is_authenticated %}
+        {% if user_reviewed %}
+            <p>You have already reviewed this movie.</p>
+        {% else %}
+            <a href="{% url 'review_create' movie.pk %}">Add Review</a>
+        {% endif %}
+    {% else %}
+        <p>
+            <a href="{% url 'login' %}">Log in</a>
+            to write a review.
+        </p>
+    {% endif %}
+
     {% if reviews %}
         {% for review in reviews %}
             <article class="review">
                 <h3>{{ review.user.username }}</h3>
                 <p><strong>Temperature:</strong> {{ review.rating }}&deg;</p>
                 <p>{{ review.comment|linebreaks }}</p>
-                <p><small>Posted: {{ review.created_at|date:"M d, Y" }}</small></p>
+                {% if user.is_authenticated and review.user == user %}
+                    <a href="{% url 'review_edit' review.pk %}">Edit</a>
+                    |
+                    <a href="{% url 'review_delete' review.pk %}">Delete</a>
+                {% endif %}
+                <p>
+                    <small>
+                        Posted: {{ review.created_at|date:"M d, Y" }}
+                    </small>
+                </p>
             </article>
             <hr>
         {% endfor %}
