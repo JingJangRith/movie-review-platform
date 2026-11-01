@@ -30,6 +30,29 @@
         min="1"
     >
 
+    <select name="sort">
+        <option
+            value="title"
+            {% if selected_sort == "title" %}selected{% endif %}
+        >
+            Title (A-Z)
+        </option>
+
+        <option
+            value="newest"
+            {% if selected_sort == "newest" %}selected{% endif %}
+        >
+            Newest First
+        </option>
+
+        <option
+            value="oldest"
+            {% if selected_sort == "oldest" %}selected{% endif %}
+        >
+            Oldest First
+        </option>
+    </select>
+
     <button type="submit">Search / Filter</button>
     <a href="{% url 'movie_list' %}">Clear Filters</a>
 </form>

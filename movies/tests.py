@@ -118,6 +118,55 @@ class MovieListTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["movies"]), 0)
 
+    def test_default_sorting_by_title(self):
+        response = self.client.get(reverse("movie_list"))
+
+        movies = list(response.context["movies"])
+
+        self.assertEqual(
+            [movie.title for movie in movies],
+            ["Inception", "Interstellar", "The Dark Knight"],
+        )
+
+    def test_sort_newest_first(self):
+        response = self.client.get(
+            reverse("movie_list"),
+            {"sort": "newest"},
+        )
+
+        movies = list(response.context["movies"])
+
+        self.assertEqual(
+            [movie.release_year for movie in movies],
+            [2014, 2010, 2008],
+        )
+
+    def test_sort_oldest_first(self):
+        response = self.client.get(
+            reverse("movie_list"),
+            {"sort": "oldest"},
+        )
+
+        movies = list(response.context["movies"])
+
+        self.assertEqual(
+            [movie.release_year for movie in movies],
+            [2008, 2010, 2014],
+        )
+
+    def test_invalid_sort_falls_back_to_title(self):
+        response = self.client.get(
+            reverse("movie_list"),
+            {"sort": "invalid"},
+        )
+
+        movies = list(response.context["movies"])
+
+        self.assertEqual(
+            [movie.title for movie in movies],
+            ["Inception", "Interstellar", "The Dark Knight"],
+        )
+
     def test_movie_detail_page(self):
         response = self.client.get(
             reverse("movie_detail", args=[self.movie1.pk])

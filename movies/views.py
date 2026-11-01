@@ -11,6 +11,7 @@ def movie_list(request):
     query = request.GET.get("q", "").strip()
     genre = request.GET.get("genre", "").strip()
     year = request.GET.get("year", "").strip()
+    sort = request.GET.get("sort", "title").strip()
 
     # Search by title, director, or genre.
     if query:
@@ -19,6 +20,15 @@ def movie_list(request):
             | Q(director__icontains=query)
             | Q(genre__icontains=query)
         )
+
+    sort_options = {
+    "title": "title",
+    "newest": "-release_year",
+    "oldest": "release_year",
+}
+    movies = movies.order_by(
+        sort_options.get(sort, "title")
+    )
 
     # Filter by genre.
     if genre:
