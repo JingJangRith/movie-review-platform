@@ -1,21 +1,68 @@
 ﻿{% extends "base.html" %}
+{% load static %}
 
 {% block title %}My Dashboard{% endblock %}
 
-{% block content %}
-<h1>Welcome, {{ user.username }}!</h1>
-<h2>My Reviews</h2>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
 
-{% if reviews %}
-    {% for review in reviews %}
-        <article>
-            <h3>{{ review.movie.title }}</h3>
-            <p>Temperature: {{ review.rating }}&deg;</p>
-            <p>{{ review.comment }}</p>
-            <p>Posted: {{ review.created_at }}</p>
-        </article>
-    {% endfor %}
-{% else %}
-    <p>You haven't written any reviews yet.</p>
-{% endif %}
+{% block content %}
+
+<div class="dashboard-header">
+    <h1>Welcome, {{ user.username }}!</h1>
+    <p class="dashboard-subtitle">
+        Here's an overview of your movie reviews.
+    </p>
+</div>
+
+<section class="dashboard-stats">
+    <article class="stat-card">
+        <h3>Total Reviews</h3>
+        <p class="stat-value">{{ total_reviews }}</p>
+    </article>
+
+    <article class="stat-card">
+        <h3>Average Temperature</h3>
+
+        {% if average_temperature is not None %}
+            <p class="stat-value">
+                {{ average_temperature|floatformat:"-1" }}&deg;
+            </p>
+        {% else %}
+            <p class="stat-value">—</p>
+        {% endif %}
+    </article>
+</section>
+
+<section class="dashboard-reviews">
+    <h2>My Reviews</h2>
+
+    {% if reviews %}
+        {% for review in reviews %}
+            <article class="review-card">
+                <h3>
+                    <a href="{% url 'movie_detail' review.movie.pk %}">
+                        {{ review.movie.title }}
+                    </a>
+                </h3>
+
+                <p class="review-rating">
+                    Temperature: {{ review.rating }}&deg;
+                </p>
+
+                <p>{{ review.comment }}</p>
+
+                <p class="review-date">
+                    Posted: {{ review.created_at|date:"M d, Y" }}
+                </p>
+            </article>
+        {% endfor %}
+    {% else %}
+        <p class="dashboard-empty">
+            You haven't written any reviews yet.
+        </p>
+    {% endif %}
+</section>
+
 {% endblock %}
