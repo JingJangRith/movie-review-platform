@@ -1,6 +1,7 @@
 from decimal import Decimal, ROUND_HALF_UP
 from django.db.models import Q, Avg
 from django.shortcuts import get_object_or_404, render
+from django.core.paginator import Paginator
 
 from .models import Movie
 
@@ -22,10 +23,10 @@ def movie_list(request):
         )
 
     sort_options = {
-    "title": "title",
-    "newest": "-release_year",
-    "oldest": "release_year",
-}
+        "title": "title",
+        "newest": "-release_year",
+        "oldest": "release_year",
+    }
     movies = movies.order_by(
         sort_options.get(sort, "title")
     )
@@ -41,6 +42,10 @@ def movie_list(request):
         else:
             movies = movies.none()
 
+    paginator = Paginator(movies, 6)
+    page_number = request.GET.get("page")
+    movies = paginator.get_page(page_number)
+
     genres = (
         Movie.objects
         .values_list("genre", flat=True)
@@ -53,6 +58,7 @@ def movie_list(request):
         "query": query,
         "selected_genre": genre,
         "selected_year": year,
+        "selected_sort": sort,
         "genres": genres,
     }
 

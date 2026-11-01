@@ -36,6 +36,164 @@ class MovieListTests(TestCase):
             genre="Sci-Fi",
         )
 
+    def create_additional_movies(self):
+        for number in range(4, 10):
+            Movie.objects.create(
+                title=f"Test Movie {number}",
+                description="A movie for pagination testing.",
+                release_year=2000 + number,
+                director="Test Director",
+                genre="Drama",
+            )
+    
+    def test_movie_list_displays_six_movies_per_page(self):
+        self.create_additional_movies()
+
+        response = self.client.get(reverse("movie_list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 6)
+        self.assertEqual(response.context["movies"].paginator.count, 9)
+        self.assertTrue(response.context["movies"].has_next())
+
+    def test_movie_list_second_page_displays_remaining_movies(self):
+        self.create_additional_movies()
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"page": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context["movies"]), 3)
+        self.assertFalse(response.context["movies"].has_next())
+        self.assertTrue(response.context["movies"].has_previous())
+
+    def test_search_is_preserved_across_pages(self):
+        self.create_additional_movies()
+
+        Movie.objects.create(
+            title="Another Nolan Movie",
+            description="A test movie.",
+            release_year=2020,
+            director="Christopher Nolan",
+            genre="Drama",
+        )
+
+        for number in range(2, 5):
+            Movie.objects.create(
+                title=f"Nolan Test Movie {number}",
+                description="A test movie.",
+                release_year=2020 + number,
+                director="Christopher Nolan",
+                genre="Drama",
+            )
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"q": "Christopher Nolan", "page": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["query"], "Christopher Nolan")
+        self.assertEqual(len(response.context["movies"]), 1)
+        self.assertEqual(
+            response.context["movies"][0].title,
+            "The Dark Knight",
+        )
+
+    def test_genre_filter_is_preserved_across_pages(self):
+        self.create_additional_movies()
+
+        for number in range(6):
+            Movie.objects.create(
+                title=f"Action Movie {number}",
+                description="An action movie.",
+                release_year=2010 + number,
+                director="Action Director",
+                genre="Action",
+            )
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"genre": "Action", "page": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context["selected_genre"],
+            "Action",
+        )
+        self.assertEqual(len(response.context["movies"]), 1)
+        self.assertEqual(
+            response.context["movies"][0].genre,
+            "Action",
+        )
+
+    def test_year_filter_is_preserved_across_pages(self):
+        self.create_additional_movies()
+
+        for number in range(7):
+            Movie.objects.create(
+                title=f"Year Test Movie {number}",
+                description="A movie for year filtering.",
+                release_year=2020,
+                director="Test Director",
+                genre="Drama",
+            )
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"year": "2020", "page": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["selected_year"], "2020")
+        self.assertEqual(len(response.context["movies"]), 1)
+        self.assertEqual(
+            response.context["movies"][0].release_year,
+            2020,
+        )
+
+    def test_sorting_is_preserved_across_pages(self):
+        self.create_additional_movies()
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"sort": "newest", "page": 2},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["selected_sort"], "newest")
+
+        movies = list(response.context["movies"])
+
+        years = [movie.release_year for movie in movies]
+
+        self.assertEqual(years, sorted(years, reverse=True))
+
+    def test_invalid_page_number_returns_first_page(self):
+        self.create_additional_movies()
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"page": "invalid"},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["movies"].number, 1)
+
+    def test_out_of_range_page_returns_last_page(self):
+        self.create_additional_movies()
+
+        response = self.client.get(
+            reverse("movie_list"),
+            {"page": 999},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["movies"].number, 2)
+
     def test_movie_list_page(self):
         response = self.client.get(reverse("movie_list"))
 
@@ -77,7 +235,7 @@ class MovieListTests(TestCase):
 
         self.assertEqual(len(response.context["movies"]), 1)
         self.assertEqual(
-            response.context["movies"].first(),
+            response.context["movies"][0],
             self.movie2,
         )
 
@@ -89,7 +247,7 @@ class MovieListTests(TestCase):
 
         self.assertEqual(len(response.context["movies"]), 1)
         self.assertEqual(
-            response.context["movies"].first(),
+            response.context["movies"][0],
             self.movie1,
         )
 
@@ -105,7 +263,7 @@ class MovieListTests(TestCase):
 
         self.assertEqual(len(response.context["movies"]), 1)
         self.assertEqual(
-            response.context["movies"].first(),
+            response.context["movies"][0],
             self.movie3,
         )
 

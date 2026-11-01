@@ -60,7 +60,7 @@
 <hr>
 
 {% if movies %}
-    <p>{{ movies|length }} movie(s) found.</p>
+    <p>{{ movies.paginator.count }} movie(s) found.</p>
 
     <div class="movie-list">
         {% for movie in movies %}
@@ -86,6 +86,23 @@
                 <p>Genre: {{ movie.genre }}</p>
             </article>
         {% endfor %}
+    </div>
+    <div class="pagination">
+        <span>
+            Page {{ movies.number }} of {{ movies.paginator.num_pages }}
+        </span>
+
+        {% if movies.has_previous %}
+            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if selected_genre %}genre={{ selected_genre|urlencode }}&{% endif %}{% if selected_year %}year={{ selected_year }}&{% endif %}sort={{ selected_sort }}&page={{ movies.previous_page_number }}">
+                Previous
+            </a>
+        {% endif %}
+
+        {% if movies.has_next %}
+            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if selected_genre %}genre={{ selected_genre|urlencode }}&{% endif %}{% if selected_year %}year={{ selected_year }}&{% endif %}sort={{ selected_sort }}&page={{ movies.next_page_number }}">
+                Next
+            </a>
+        {% endif %}
     </div>
 {% else %}
     <p>No movies found. Try changing your search or filters.</p>
