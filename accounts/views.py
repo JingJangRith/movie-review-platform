@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from django.db.models import Avg
+
 from .forms import RegisterForm, ProfileForm
 
 
@@ -35,6 +37,15 @@ def logout_view(request):
 
 @login_required
 def profile_view(request):
+    user_reviews = request.user.reviews.select_related("movie")
+
+    review_count = user_reviews.count()
+    average_rating = user_reviews.aggregate(
+        average=Avg("rating")
+    )["average"]
+
+    recent_reviews = user_reviews[:5]
+
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=request.user)
 
@@ -45,8 +56,14 @@ def profile_view(request):
     else:
         form = ProfileForm(instance=request.user)
 
-    return render(request, "accounts/profile.html", {"form": form})
+    context = {
+        "form": form,
+        "review_count": review_count,
+        "average_rating": average_rating,
+        "recent_reviews": recent_reviews,
+    }
 
+    return render(request, "accounts/profile.html", context)
 
 @login_required
 def delete_account_view(request):

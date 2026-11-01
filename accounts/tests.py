@@ -2,6 +2,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from movies.models import Movie
+from reviews.models import Review
+
 User = get_user_model()
 
 
@@ -80,3 +83,59 @@ class AccountTests(TestCase):
 
         self.assertRedirects(response, reverse("login"))
         self.assertFalse(User.objects.filter(username="testuser").exists())
+
+    def test_profile_statistics_with_reviews(self):
+        movie1 = Movie.objects.create(
+                title="Interstellar",
+                description="A science fiction movie.",
+                release_year=2014,
+                director="Christopher Nolan",
+                genre="Sci-Fi",
+        )
+
+        movie2 = Movie.objects.create(
+            title="Inception",
+            description="A mind-bending movie.",
+            release_year=2010,
+            director="Christopher Nolan",
+            genre="Sci-Fi",
+        )
+
+        Review.objects.create(
+            user=self.user,
+            movie=movie1,
+            rating=80,
+            comment="Great movie!",
+        )
+
+        Review.objects.create(
+            user=self.user,
+            movie=movie2,
+            rating=100,
+            comment="Excellent!",
+        )
+
+        self.client.login(
+            username="testuser",
+            password="StrongPass!9284",
+        )
+
+        response = self.client.get(reverse("profile"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["review_count"], 2)
+        self.assertEqual(response.context["average_rating"], 90)
+        self.assertEqual(len(response.context["recent_reviews"]), 2)
+
+    def test_profile_statistics_without_reviews(self):
+        self.client.login(
+            username="testuser",
+            password="StrongPass!9284",
+        )
+
+        response = self.client.get(reverse("profile"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["review_count"], 0)
+        self.assertIsNone(response.context["average_rating"])
+        self.assertEqual(len(response.context["recent_reviews"]), 0)

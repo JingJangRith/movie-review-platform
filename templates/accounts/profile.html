@@ -4,11 +4,71 @@
 
 {% block content %}
 <h1>My Profile</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-</form>
+
+<section>
+    <h2>Account Information</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Save Changes</button>
+    </form>
+</section>
+
 <hr>
+
+<section>
+    <h2>My Review Statistics</h2>
+
+    <p><strong>Total Reviews:</strong> {{ review_count }}</p>
+
+    <p>
+        <strong>Average Temperature Given:</strong>
+        {% if average_rating %}
+            {{ average_rating|floatformat:1 }}°
+        {% else %}
+            No reviews yet
+        {% endif %}
+    </p>
+</section>
+
+<hr>
+
+<section>
+    <h2>Recent Reviews</h2>
+
+    {% if recent_reviews %}
+        {% for review in recent_reviews %}
+            <article>
+                <h3>
+                    <a href="{% url 'movie_detail' review.movie.pk %}">
+                        {{ review.movie.title }}
+                    </a>
+                </h3>
+
+                <p>
+                    <strong>Your Temperature:</strong>
+                    {{ review.rating }}°
+                </p>
+
+                <p>{{ review.comment|truncatewords:20 }}</p>
+
+                <small>
+                    Posted: {{ review.created_at|date:"M d, Y" }}
+                </small>
+            </article>
+
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <p>You haven't written any reviews yet.</p>
+    {% endif %}
+</section>
+
+<hr>
+
 <a href="{% url 'delete_account' %}">Delete My Account</a>
 {% endblock %}
