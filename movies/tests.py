@@ -46,13 +46,13 @@ class MovieListTests(TestCase):
                 genre="Drama",
             )
     
-    def test_movie_list_displays_six_movies_per_page(self):
+    def test_movie_list_displays_eight_movies_per_page(self):
         self.create_additional_movies()
 
         response = self.client.get(reverse("movie_list"))
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context["movies"]), 6)
+        self.assertEqual(len(response.context["movies"]), 8)
         self.assertEqual(response.context["movies"].paginator.count, 9)
         self.assertTrue(response.context["movies"].has_next())
 
@@ -65,7 +65,7 @@ class MovieListTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context["movies"]), 3)
+        self.assertEqual(len(response.context["movies"]), 1)
         self.assertFalse(response.context["movies"].has_next())
         self.assertTrue(response.context["movies"].has_previous())
 
@@ -80,7 +80,7 @@ class MovieListTests(TestCase):
             genre="Drama",
         )
 
-        for number in range(2, 5):
+        for number in range(2, 7):
             Movie.objects.create(
                 title=f"Nolan Test Movie {number}",
                 description="A test movie.",
@@ -98,14 +98,14 @@ class MovieListTests(TestCase):
         self.assertEqual(response.context["query"], "Christopher Nolan")
         self.assertEqual(len(response.context["movies"]), 1)
         self.assertEqual(
-            response.context["movies"][0].title,
-            "The Dark Knight",
+            response.context["movies"][0].director,
+            "Christopher Nolan",
         )
 
     def test_genre_filter_is_preserved_across_pages(self):
         self.create_additional_movies()
 
-        for number in range(6):
+        for number in range(8):
             Movie.objects.create(
                 title=f"Action Movie {number}",
                 description="An action movie.",
@@ -133,7 +133,7 @@ class MovieListTests(TestCase):
     def test_year_filter_is_preserved_across_pages(self):
         self.create_additional_movies()
 
-        for number in range(7):
+        for number in range(9):
             Movie.objects.create(
                 title=f"Year Test Movie {number}",
                 description="A movie for year filtering.",

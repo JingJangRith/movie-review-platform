@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home | Movie Review Platform{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Discover Movies. Share Your Reviews.</h1>
+    <p>
+        Explore great movies, share your opinions, and discover
+        what other movie lovers think.
+    </p>
+    <a href="{% url 'movie_list' %}" class="hero-button">
+        Explore Movies
+    </a>
+</section>
+
+<section class="featured-section">
+    <h2>Featured Movies</h2>
+    <p>Explore some of the movies in our collection.</p>
+
+    <div class="movie-list">
+        {% for movie in featured_movies %}
+            <article class="movie-card">
+                {% if movie.poster_url %}
+                    <img
+                        src="{{ movie.poster_url }}"
+                        alt="{{ movie.title }} poster"
+                        width="150"
+                    >
+                {% else %}
+                    <p>No poster available</p>
+                {% endif %}
+
+                <h3>
+                    <a href="{% url 'movie_detail' movie.pk %}">
+                        {{ movie.title }}
+                    </a>
+                </h3>
+
+                <p>{{ movie.release_year }}</p>
+                <p>{{ movie.genre }}</p>
+            </article>
+        {% empty %}
+            <p>No movies available yet.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'movie_list' %}">View All Movies →</a>
+</section>
+{% endblock %}

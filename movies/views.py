@@ -42,7 +42,7 @@ def movie_list(request):
         else:
             movies = movies.none()
 
-    paginator = Paginator(movies, 6)
+    paginator = Paginator(movies, 8)
     page_number = request.GET.get("page")
     movies = paginator.get_page(page_number)
 
@@ -109,5 +109,16 @@ def movie_detail(request, pk):
             "average_temperature": average,
             "temperature_category": temperature_category,
             "user_reviewed": user_reviewed,
+        },
+    )
+
+def home(request):
+    featured_movies = Movie.objects.order_by("-release_year")[:4]
+
+    return render(
+        request,
+        "movies/home.html",
+        {
+            "featured_movies": featured_movies,
         },
     )

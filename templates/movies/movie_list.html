@@ -1,8 +1,15 @@
 ﻿{% extends "base.html" %}
+{% load static %}
 
 {% block title %}Browse Movies{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/movies.css' %}">
+{% endblock %}
+
+
 {% block content %}
+<div class="movie-page">
 <h1>Browse Movies</h1>
 
 <form method="get">
@@ -108,3 +115,4 @@
     <p>No movies found. Try changing your search or filters.</p>
 {% endif %}
 {% endblock %}
+</div>
