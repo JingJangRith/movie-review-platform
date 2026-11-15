@@ -1,74 +1,131 @@
 ﻿{% extends "base.html" %}
+{% load static %}
 
 {% block title %}My Profile{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>My Profile</h1>
+<div class="profile-page">
 
-<section>
-    <h2>Account Information</h2>
+    <div class="profile-header">
+        <div>
+            <span class="profile-label">ACCOUNT SETTINGS</span>
+            <h1>My Profile</h1>
+            <p>Manage your account and keep track of your movie reviews.</p>
+        </div>
+    </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+    <div class="profile-grid">
 
-        <button type="submit">Save Changes</button>
-    </form>
-</section>
+        <section class="profile-card account-card">
+            <div class="section-heading">
+                <span class="section-icon">👤</span>
+                <div>
+                    <h2>Account Information</h2>
+                    <p>Update your personal information.</p>
+                </div>
+            </div>
 
-<hr>
+            <form method="post" class="profile-form">
+                {% csrf_token %}
+                {{ form.as_p }}
 
-<section>
-    <h2>My Review Statistics</h2>
+                <button type="submit" class="save-button">
+                    Save Changes
+                </button>
+            </form>
+        </section>
 
-    <p><strong>Total Reviews:</strong> {{ review_count }}</p>
+        <section class="profile-card statistics-card">
+            <div class="section-heading">
+                <span class="section-icon">📊</span>
+                <div>
+                    <h2>My Review Statistics</h2>
+                    <p>Your movie reviewing activity.</p>
+                </div>
+            </div>
 
-    <p>
-        <strong>Average Temperature Given:</strong>
-        {% if average_rating %}
-            {{ average_rating|floatformat:1 }}°
+            <div class="stat-item">
+                <span class="stat-label">Total Reviews</span>
+                <strong class="stat-number">{{ review_count }}</strong>
+            </div>
+
+            <div class="stat-item rating-stat">
+                <span class="stat-label">Average Temperature Given</span>
+
+                <strong class="stat-number">
+                    {% if average_rating %}
+                        {{ average_rating|floatformat:1 }}°
+                    {% else %}
+                        —
+                    {% endif %}
+                </strong>
+
+                {% if not average_rating %}
+                    <small>No reviews yet</small>
+                {% endif %}
+            </div>
+        </section>
+
+    </div>
+
+    <section class="profile-card recent-reviews-card">
+        <div class="section-heading">
+            <span class="section-icon">🎬</span>
+            <div>
+                <h2>Recent Reviews</h2>
+                <p>Your latest movie reviews.</p>
+            </div>
+        </div>
+
+        {% if recent_reviews %}
+            <div class="review-list">
+                {% for review in recent_reviews %}
+                    <article class="profile-review">
+                        <div class="review-top">
+                            <h3>
+                                <a href="{% url 'movie_detail' review.movie.pk %}">
+                                    {{ review.movie.title }}
+                                </a>
+                            </h3>
+
+                            <span class="review-rating">
+                                {{ review.rating }}°
+                            </span>
+                        </div>
+
+                        <p class="review-comment">
+                            {{ review.comment|truncatewords:20 }}
+                        </p>
+
+                        <small class="review-date">
+                            Posted: {{ review.created_at|date:"M d, Y" }}
+                        </small>
+                    </article>
+                {% endfor %}
+            </div>
         {% else %}
-            No reviews yet
+            <div class="empty-reviews">
+                <span>🎥</span>
+                <h3>No Reviews Yet</h3>
+                <p>You haven't written any reviews yet.</p>
+            </div>
         {% endif %}
-    </p>
-</section>
+    </section>
 
-<hr>
+    <div class="profile-danger-zone">
+        <div>
+            <h3>Delete Account</h3>
+            <p>This action will take you to the account deletion page.</p>
+        </div>
 
-<section>
-    <h2>Recent Reviews</h2>
+        <a href="{% url 'delete_account' %}" class="delete-account-button">
+            Delete My Account
+        </a>
+    </div>
 
-    {% if recent_reviews %}
-        {% for review in recent_reviews %}
-            <article>
-                <h3>
-                    <a href="{% url 'movie_detail' review.movie.pk %}">
-                        {{ review.movie.title }}
-                    </a>
-                </h3>
-
-                <p>
-                    <strong>Your Temperature:</strong>
-                    {{ review.rating }}°
-                </p>
-
-                <p>{{ review.comment|truncatewords:20 }}</p>
-
-                <small>
-                    Posted: {{ review.created_at|date:"M d, Y" }}
-                </small>
-            </article>
-
-            {% if not forloop.last %}
-                <hr>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <p>You haven't written any reviews yet.</p>
-    {% endif %}
-</section>
-
-<hr>
-
-<a href="{% url 'delete_account' %}">Delete My Account</a>
+</div>
 {% endblock %}
