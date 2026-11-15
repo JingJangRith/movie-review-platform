@@ -1,0 +1,254 @@
+/* Dark Cinematic Base */
+body {
+    /* ផ្ទាំងខាងក្រោយលាយពណ៌ខៀវ និងក្រហមបែប Cinematic Neon នៅជ្រុងៗ និងផ្ទៃខ្មៅងងឹតនៅកណ្ដាល */
+    background: 
+        radial-gradient(circle at 15% 20%, rgba(29, 78, 216, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(220, 38, 38, 0.18) 0%, transparent 45%),
+        #0b0c10 !important;
+    color: #f3f4f6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+}
+
+.cinema-wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 30px 24px 60px;
+}
+
+/* Filter Bar Section */
+.filter-section {
+    margin-bottom: 28px;
+}
+
+.filter-inputs-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding-left: 36px;
+}
+
+/* Action Buttons & Sort Row */
+.filter-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.left-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-search {
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 22px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-search:hover {
+    background-color: #2563eb;
+}
+
+.btn-clear {
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.btn-clear:hover {
+    color: #ffffff;
+}
+
+.right-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.right-actions label {
+    font-size: 0.85rem;
+    color: #9ca3af;
+}
+
+.results-meta {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: #d1d5db;
+}
+
+/* Movie Grid (4-5 Columns like reference) */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 26px;
+}
+
+.movie-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-6px);
+}
+
+.poster-container {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #1f2937;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    margin-bottom: 12px;
+}
+
+.poster-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .poster-container img {
+    transform: scale(1.04);
+}
+
+.no-poster {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.movie-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #f9fafb;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.movie-year {
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+/* Pagination */
+.pagination-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 45px;
+    font-size: 0.9rem;
+    color: #d1d5db;
+}
+
+.page-btn {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #374151;
+    transition: background-color 0.2s;
+}
+
+.page-btn:hover {
+    background-color: #374151;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #9ca3af;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .filter-inputs-row {
+        grid-template-columns: 1fr;
+    }
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+}
+/* ពង្រីកទំហំអក្សរចំណងជើងខាងលើប្រអប់ (Search, Genre, Release Year) ឱ្យធំបន្តិច */
+.filter-group label {
+    font-size: 1rem; /* កែពី 0.85rem មក 1rem ឱ្យធំជាងមុន */
+    font-weight: 700;
+    color: #f3f4f6;
+}
+
+/* កំណត់ពណ៌ប្រអប់ (Input/Select) ឱ្យចេញជាពណ៌ផ្កាឈូកខ្ចីទន់ៗ */
+.filter-group input,
+.filter-group select,
+.right-actions select {
+    background-color: #fce7f3 !important; /* ពណ៌ផ្កាឈូកទន់ (Soft Pink) */
+    color: #831843 !important;            /* ពណ៌អក្សរខាងក្នុងប្រអប់ដិតស្អាត */
+    border: 1px solid #f472b6;
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+/* ពេលយក Mouse ចុចលើប្រអប់ (Focus) ឱ្យ Highlight ចេញជាពណ៌ស្វាយ (Purple Glow) */
+.filter-group input:focus,
+.filter-group select:focus,
+.right-actions select:focus {
+    background-color: #fbcfe8 !important;
+    border-color: #8b5cf6 !important;     /* ពណ៌ស្វាយ (Purple) */
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.35); /* ពន្លឺពណ៌ស្វាយជុំវិញប្រអប់ */
+}
+
+/* រក្សារូបតំណាងស្វែងរក (Search icon) ឱ្យមើលឃើញច្បាស់ */
+.input-with-icon .search-icon {
+    position: absolute;
+    left: 12px;
+    font-size: 0.9rem;
+    color: #831843;
+    pointer-events: none;
+}
