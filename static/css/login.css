@@ -1,0 +1,256 @@
+
+
+:root {
+    --login-bg-card: rgba(22, 27, 38, 0.85);
+    --login-bg-input: rgba(13, 17, 23, 0.75);
+    --login-bg-input-focus: rgba(13, 17, 23, 0.95);
+    --login-border: rgba(255, 255, 255, 0.08);
+    --login-border-hover: rgba(255, 255, 255, 0.18);
+    --login-accent: #63b3ed;
+    --login-accent-hover: #90cdf4;
+    --login-accent-glow: rgba(99, 179, 237, 0.24);
+    --login-danger: #fc8181;
+    --login-danger-bg: rgba(252, 129, 129, 0.1);
+    --login-text-primary: #f7fafc;
+    --login-text-secondary: #cbd5e0;
+    --login-text-muted: #94a3b8;
+}
+
+
+.auth-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px);
+    padding: clamp(1.5rem, 4vw, 3rem) 1rem;
+    background:
+        radial-gradient(circle at 50% 25%, rgba(99, 179, 237, 0.12), transparent 55%),
+        radial-gradient(circle at 80% 80%, rgba(129, 140, 248, 0.08), transparent 50%);
+}
+
+
+.auth-card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    padding: clamp(1.75rem, 5vw, 2.75rem);
+    background: var(--login-bg-card);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--login-border);
+    border-radius: 16px;
+    box-shadow:
+        0 25px 50px -12px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+    animation: cardEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+
+.auth-card h2 {
+    margin: 0 0 0.5rem;
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    text-align: center;
+    background: linear-gradient(135deg, #ffffff 0%, #cbd5e0 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.auth-subtitle {
+    margin: 0 0 2rem;
+    font-size: 0.925rem;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--login-text-muted);
+}
+
+/* Django Non-Field Errors Banner */
+.alert-danger {
+    margin-bottom: 1.5rem;
+    padding: 0.85rem 1rem;
+    background: var(--login-danger-bg);
+    border: 1px solid rgba(252, 129, 129, 0.3);
+    border-left: 4px solid var(--login-danger);
+    border-radius: 8px;
+    color: #fed7d7;
+    font-size: 0.875rem;
+    line-height: 1.45;
+}
+
+.alert-danger p {
+    margin: 0;
+}
+
+/* Form Layout & Field States */
+.auth-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 1.35rem;
+}
+
+.auth-form label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.015em;
+    color: var(--login-text-secondary);
+    transition: color 0.2s ease;
+}
+
+.auth-form .form-group:focus-within label {
+    color: var(--login-accent);
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem 1rem;
+    font-size: 0.975rem;
+    color: var(--login-text-primary);
+    background: var(--login-bg-input);
+    border: 1px solid var(--login-border);
+    border-radius: 10px;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.auth-form input::placeholder {
+    color: #64748b;
+}
+
+.auth-form input:hover {
+    border-color: var(--login-border-hover);
+}
+
+.auth-form input:focus {
+    outline: none;
+    background: var(--login-bg-input-focus);
+    border-color: var(--login-accent);
+    box-shadow: 0 0 0 3.5px var(--login-accent-glow);
+}
+
+
+.auth-form .form-group:has(.error-text) label {
+    color: var(--login-danger);
+}
+
+.auth-form .form-group:has(.error-text) input {
+    border-color: var(--login-danger);
+    background: rgba(252, 129, 129, 0.04);
+}
+
+.auth-form .form-group:has(.error-text) input:focus {
+    box-shadow: 0 0 0 3.5px rgba(252, 129, 129, 0.22);
+}
+
+
+.auth-form input:-webkit-autofill,
+.auth-form input:-webkit-autofill:hover,
+.auth-form input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--login-text-primary);
+    -webkit-box-shadow: 0 0 0 1000px #111622 inset;
+    border-color: var(--login-border-hover);
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+
+.error-text {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--login-danger);
+    line-height: 1.4;
+}
+
+.help-text {
+    font-size: 0.78rem;
+    color: var(--login-text-muted);
+    line-height: 1.45;
+}
+
+.btn-full {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 0.75rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #0b0f19;
+    background: linear-gradient(135deg, #63b3ed 0%, #4299e1 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(66, 153, 225, 0.35);
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+}
+
+.btn-full:hover {
+    filter: brightness(1.07);
+    box-shadow: 0 8px 22px rgba(66, 153, 225, 0.45);
+    transform: translateY(-1px);
+}
+
+.btn-full:active {
+    transform: translateY(0) scale(0.985);
+}
+
+.btn-full:focus-visible {
+    outline: 2px solid var(--login-accent-hover);
+    outline-offset: 3px;
+}
+
+
+.auth-footer {
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--login-border);
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--login-text-muted);
+}
+
+.auth-footer a {
+    color: var(--login-accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.auth-footer a:hover {
+    color: var(--login-accent-hover);
+    text-decoration: underline;
+}
+
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .auth-card,
+    .auth-form input,
+    .btn-full {
+        animation: none;
+        transition: none;
+    }
+}

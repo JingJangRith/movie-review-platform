@@ -8,48 +8,58 @@
 {% endblock %}
 
 {% block content %}
-<section class="hero">
-    <h1>Discover Movies. Share Your Reviews.</h1>
-    <p>
-        Explore great movies, share your opinions, and discover
-        what other movie lovers think.
-    </p>
-    <a href="{% url 'movie_list' %}" class="hero-button">
-        Explore Movies
-    </a>
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">Discover Movies. Share Your Reviews.</h1>
+        <p class="hero-subtitle">
+            Explore great movies, share your opinions, and discover what other movie lovers think.
+        </p>
+        <div class="hero-actions">
+            <a href="{% url 'movie_list' %}" class="btn-primary">Explore Movies</a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}" class="btn-secondary">Join Now</a>
+            {% endif %}
+        </div>
+    </div>
 </section>
 
 <section class="featured-section">
-    <h2>Featured Movies</h2>
-    <p>Explore some of the movies in our collection.</p>
+    <div class="section-header">
+        <h2 class="section-title">Featured Movies</h2>
+        <p class="section-desc">Explore some of the handpicked movies in our growing collection.</p>
+    </div>
 
-    <div class="movie-list">
+    <div class="movie-grid">
         {% for movie in featured_movies %}
             <article class="movie-card">
-                {% if movie.poster_url %}
-                    <img
-                        src="{{ movie.poster_url }}"
-                        alt="{{ movie.title }} poster"
-                        width="150"
-                    >
-                {% else %}
-                    <p>No poster available</p>
-                {% endif %}
+                <a href="{% url 'movie_detail' movie.pk %}" class="poster-link">
+                    {% if movie.poster_url %}
+                        <img src="{{ movie.poster_url }}" alt="{{ movie.title }} poster" class="movie-poster">
+                    {% else %}
+                        <div class="movie-poster-placeholder">No Poster Available</div>
+                    {% endif %}
+                </a>
 
-                <h3>
-                    <a href="{% url 'movie_detail' movie.pk %}">
-                        {{ movie.title }}
-                    </a>
-                </h3>
-
-                <p>{{ movie.release_year }}</p>
-                <p>{{ movie.genre }}</p>
+                <div class="movie-info">
+                    <div>
+                        <h3 class="movie-title">
+                            <a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a>
+                        </h3>
+                        <div class="movie-meta">
+                            <span class="year-badge">{{ movie.release_year }}</span>
+                            <span class="genre-text">{{ movie.genre }}</span>
+                        </div>
+                    </div>
+                    <a href="{% url 'movie_detail' movie.pk %}" class="btn-card">View Reviews</a>
+                </div>
             </article>
         {% empty %}
-            <p>No movies available yet.</p>
+            <p class="empty-message">No movies available yet. Check back soon!</p>
         {% endfor %}
     </div>
 
-    <a href="{% url 'movie_list' %}">View All Movies →</a>
+    <div class="section-footer">
+        <a href="{% url 'movie_list' %}" class="view-all-link">View All Movies →</a>
+    </div>
 </section>
 {% endblock %}
