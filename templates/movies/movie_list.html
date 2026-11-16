@@ -48,17 +48,31 @@
                 <div class="right-actions">
                     <label for="sort-select">Sort By</label>
                     <select id="sort-select" name="sort" onchange="this.form.submit()">
-                        <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Title (A-Z)</option>
-                        <option value="-title" {% if request.GET.sort == '-title' %}selected{% endif %}>Title (Z-A)</option>
-                        <option value="-release_year" {% if request.GET.sort == '-release_year' %}selected{% endif %}>Newest First</option>
-                        <option value="release_year" {% if request.GET.sort == 'release_year' %}selected{% endif %}>Oldest First</option>
+
+                        <option value="title"
+                            {% if selected_sort == 'title' %}selected{% endif %}>
+                            Title (A-Z)
+                        </option>
+
+                        <option value="newest"
+                            {% if selected_sort == 'newest' %}selected{% endif %}>
+                            Newest First
+                        </option>
+
+                        <option value="oldest"
+                            {% if selected_sort == 'oldest' %}selected{% endif %}>
+                            Oldest First
+                        </option>
+
                     </select>
                 </div>
             </div>
         </form>
 
         <div class="results-meta">
-            <span><strong>{{ page_obj.paginator.count|default:movies.count }}</strong> results found</span>
+            <span>
+                <strong>{{ movies.paginator.count }}</strong> results found
+            </span>
         </div>
     </section>
 
@@ -85,17 +99,27 @@
     </section>
 
     <!-- Pagination -->
-    {% if is_paginated %}
+    {% if movies.has_other_pages %}
     <div class="pagination-bar">
-        {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-btn">← Previous</a>
+
+        {% if movies.has_previous %}
+            <a href="?page={{ movies.previous_page_number }}&q={{ request.GET.q|urlencode }}&genre={{ request.GET.genre|urlencode }}&year={{ request.GET.year|urlencode }}&sort={{ request.GET.sort|urlencode }}"
+            class="page-btn">
+                ← Previous
+            </a>
         {% endif %}
 
-        <span class="page-indicator">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        <span class="page-indicator">
+            Page {{ movies.number }} of {{ movies.paginator.num_pages }}
+        </span>
 
-        {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-btn">Next →</a>
+        {% if movies.has_next %}
+            <a href="?page={{ movies.next_page_number }}&q={{ request.GET.q|urlencode }}&genre={{ request.GET.genre|urlencode }}&year={{ request.GET.year|urlencode }}&sort={{ request.GET.sort|urlencode }}"
+            class="page-btn">
+                Next →
+            </a>
         {% endif %}
+
     </div>
     {% endif %}
 </div>

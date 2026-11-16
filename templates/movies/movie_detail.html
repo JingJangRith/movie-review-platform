@@ -62,8 +62,17 @@
         <div class="temperature-display">
             <div class="temp-icon">🌡️</div>
             <div class="temp-info">
-                <span class="temp-value">89%</span>
-                <span class="temp-label">Audience Score</span>
+                <span class="temp-value">
+                    {% if average_temperature is not None %}
+                        {{ average_temperature }}°
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </span>
+
+                <span class="temp-label">
+                    {{ temperature_category }}
+                </span>
             </div>
         </div>
     </div>
@@ -71,7 +80,24 @@
     <!-- Reviews Section -->
     <div class="reviews-section-header">
         <h3>Community Opinions</h3>
-        <a href="#" class="btn-add-review">+ Add Review</a>
+        {% if user.is_authenticated %}
+
+            {% if not user_reviewed %}
+                <a href="{% url 'review_create' movie.pk %}"
+                class="btn-add-review">
+                    + Add Review
+                </a>
+            {% else %}
+                <span class="btn-add-review">
+                    You have already reviewed this movie
+                </span>
+            {% endif %}
+
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-add-review">
+                Login to Review
+            </a>
+        {% endif %}
     </div>
 
     <div class="reviews-container">
@@ -79,7 +105,9 @@
         <div class="review-card">
             <div class="review-header">
                 <span class="reviewer-name">{{ review.user.username }}</span>
-                <span class="review-rating">★ {{ review.rating }}/5</span>
+                <span class="review-rating">
+                    🌡️ {{ review.rating }}°
+                </span>
             </div>
             <p class="review-comment">{{ review.comment }}</p>
         </div>
