@@ -1,118 +1,102 @@
-﻿{% extends "base.html" %}
+﻿{% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Browse Movies{% endblock %}
-
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/movies.css' %}">
+<link rel="stylesheet" href="{% static 'css/movie_list.css' %}">
 {% endblock %}
-
 
 {% block content %}
-<div class="movie-page">
-<h1>Browse Movies</h1>
+<div class="cinema-wrapper">
+    <!-- Filter & Search Section -->
+    <section class="filter-section">
+        <form method="get" action="{% url 'movie_list' %}" class="filter-form">
+            <div class="filter-inputs-row">
+                <!-- Search Input -->
+                <div class="filter-group search-group">
+                    <label for="search-input">Search</label>
+                    <div class="input-with-icon">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search title, director, or genre...">
+                    </div>
+                </div>
 
-<form method="get">
-    <input
-        type="text"
-        name="q"
-        placeholder="Search by title, director, or genre..."
-        value="{{ query }}"
-    >
+                <!-- Genre Select -->
+                <div class="filter-group">
+                    <label for="genre-select">Genre</label>
+                    <select id="genre-select" name="genre">
+                        <option value="">All Genres</option>
+                        {% for genre in genres %}
+                            <option value="{{ genre }}" {% if request.GET.genre == genre %}selected{% endif %}>{{ genre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-    <select name="genre">
-        <option value="">All Genres</option>
-        {% for item in genres %}
-            <option value="{{ item }}" {% if selected_genre == item %}selected{% endif %}>
-                {{ item }}
-            </option>
-        {% endfor %}
-    </select>
+                <!-- Release Year Input -->
+                <div class="filter-group">
+                    <label for="year-input">Release Year</label>
+                    <input type="number" id="year-input" name="year" value="{{ request.GET.year|default:'' }}" placeholder="e.g. 2014">
+                </div>
+            </div>
 
-    <input
-        type="number"
-        name="year"
-        placeholder="Release year"
-        value="{{ selected_year }}"
-        min="1"
-    >
+            <!-- Action Buttons & Sort Row -->
+            <div class="filter-actions-row">
+                <div class="left-actions">
+                    <button type="submit" class="btn-search">SEARCH</button>
+                    <a href="{% url 'movie_list' %}" class="btn-clear">✕ Clear Filters</a>
+                </div>
 
-    <select name="sort">
-        <option
-            value="title"
-            {% if selected_sort == "title" %}selected{% endif %}
-        >
-            Title (A-Z)
-        </option>
+                <div class="right-actions">
+                    <label for="sort-select">Sort By</label>
+                    <select id="sort-select" name="sort" onchange="this.form.submit()">
+                        <option value="title" {% if request.GET.sort == 'title' %}selected{% endif %}>Title (A-Z)</option>
+                        <option value="-title" {% if request.GET.sort == '-title' %}selected{% endif %}>Title (Z-A)</option>
+                        <option value="-release_year" {% if request.GET.sort == '-release_year' %}selected{% endif %}>Newest First</option>
+                        <option value="release_year" {% if request.GET.sort == 'release_year' %}selected{% endif %}>Oldest First</option>
+                    </select>
+                </div>
+            </div>
+        </form>
 
-        <option
-            value="newest"
-            {% if selected_sort == "newest" %}selected{% endif %}
-        >
-            Newest First
-        </option>
+        <div class="results-meta">
+            <span><strong>{{ page_obj.paginator.count|default:movies.count }}</strong> results found</span>
+        </div>
+    </section>
 
-        <option
-            value="oldest"
-            {% if selected_sort == "oldest" %}selected{% endif %}
-        >
-            Oldest First
-        </option>
-    </select>
-
-    <button type="submit">Search / Filter</button>
-    <a href="{% url 'movie_list' %}">Clear Filters</a>
-</form>
-
-<hr>
-
-{% if movies %}
-    <p>{{ movies.paginator.count }} movie(s) found.</p>
-
-    <div class="movie-list">
+    <!-- Movie Poster Grid -->
+    <section class="movie-grid">
         {% for movie in movies %}
-            <article class="movie-card">
+        <a href="{% url 'movie_detail' movie.pk %}" class="movie-card">
+            <div class="poster-container">
                 {% if movie.poster_url %}
-                    <img
-                        src="{{ movie.poster_url }}"
-                        alt="{{ movie.title }} poster"
-                        width="150"
-                    >
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" loading="lazy">
                 {% else %}
-                    <p>No poster available</p>
+                    <div class="no-poster">No Image</div>
                 {% endif %}
-
-                <h2>
-                    <a href="{% url 'movie_detail' movie.pk %}">
-                        {{ movie.title }}
-                    </a>
-                </h2>
-
-                <p>Release year: {{ movie.release_year }}</p>
-                <p>Director: {{ movie.director }}</p>
-                <p>Genre: {{ movie.genre }}</p>
-            </article>
+            </div>
+            <div class="movie-info">
+                <h3 class="movie-title">{{ movie.title }} <span class="movie-year">({{ movie.release_year }})</span></h3>
+            </div>
+        </a>
+        {% empty %}
+        <div class="empty-state">
+            <p>No movies found matching your criteria.</p>
+        </div>
         {% endfor %}
-    </div>
-    <div class="pagination">
-        <span>
-            Page {{ movies.number }} of {{ movies.paginator.num_pages }}
-        </span>
+    </section>
 
-        {% if movies.has_previous %}
-            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if selected_genre %}genre={{ selected_genre|urlencode }}&{% endif %}{% if selected_year %}year={{ selected_year }}&{% endif %}sort={{ selected_sort }}&page={{ movies.previous_page_number }}">
-                Previous
-            </a>
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination-bar">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-btn">← Previous</a>
         {% endif %}
 
-        {% if movies.has_next %}
-            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}{% if selected_genre %}genre={{ selected_genre|urlencode }}&{% endif %}{% if selected_year %}year={{ selected_year }}&{% endif %}sort={{ selected_sort }}&page={{ movies.next_page_number }}">
-                Next
-            </a>
+        <span class="page-indicator">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.genre %}&genre={{ request.GET.genre }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="page-btn">Next →</a>
         {% endif %}
     </div>
-{% else %}
-    <p>No movies found. Try changing your search or filters.</p>
-{% endif %}
-{% endblock %}
+    {% endif %}
 </div>
+{% endblock %}
