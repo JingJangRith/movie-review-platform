@@ -40,7 +40,7 @@ nav {
 }
 
 .nav-links a {
-  color: white;
+  color:white;
   text-decoration: none;
 }
 
@@ -62,199 +62,149 @@ footer {
 }
 
 
-/*  (Authentication) */
+/* Center the card cleanly on any screen */
 .auth-wrapper {
-    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 78vh;
+    min-height: calc(100vh - 140px);
     padding: 2.5rem 1rem;
-    background: radial-gradient(circle at 50% 35%, rgba(99, 179, 237, 0.1), transparent 60%);
 }
 
 .auth-card {
-    background: rgba(26, 32, 44, 0.85);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    padding: clamp(1.75rem, 4vw, 2.75rem);
+    background: #1e293b;
+    border: 1px solid #334155;
     border-radius: 16px;
+    padding: 2.5rem;
     width: 100%;
-    max-width: 450px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
-    animation: authCardEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    max-width: 460px;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.25);
+    box-sizing: border-box;
 }
 
-.auth-card h2 {
-    font-size: 1.85rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-    margin-bottom: 0.5rem;
+.auth-header {
     text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-title {
+    color: #ffffff;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
 }
 
 .auth-subtitle {
-    color: #a0aec0;
-    font-size: 0.925rem;
-    text-align: center;
-    margin-bottom: 2rem;
-    line-height: 1.5;
-}
-
-.alert-danger {
-    background: rgba(245, 101, 101, 0.12);
-    border-left: 4px solid #f56565;
-    color: #fed7d7;
-    padding: 0.85rem 1rem;
-    border-radius: 6px;
-    margin-bottom: 1.5rem;
-    font-size: 0.875rem;
-}
-
-.alert-danger p {
+    color: #94a3b8;
+    font-size: 0.95rem;
     margin: 0;
 }
 
-.auth-form .form-group {
+/* Form Fields */
+.form-group {
     margin-bottom: 1.35rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
 }
 
-.auth-form label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+.form-label {
+    display: block;
     color: #e2e8f0;
-    transition: color 0.2s ease;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.45rem;
 }
 
-.auth-form .form-group:focus-within label {
-    color: #63b3ed;
-}
-
-.auth-form input {
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
     width: 100%;
     box-sizing: border-box;
-    background: rgba(15, 20, 30, 0.75);
-    border: 1px solid #2d3748;
+    padding: 0.75rem 1rem;
+    background: #0f172a;
+    border: 1px solid #475569;
     border-radius: 8px;
-    padding: 0.8rem 1rem;
-    color: #f7fafc;
-    font-size: 0.975rem;
-    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.auth-form input:hover {
-    border-color: #4a5568;
+    color: #f8fafc;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-form input:focus {
     outline: none;
-    background: rgba(15, 20, 30, 0.95);
-    border-color: #63b3ed;
-    box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.22);
+    border-color: #e50914;
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.25);
 }
 
-/* Highlight input automatically when Django renders field.errors */
-.auth-form .form-group:has(.error-text) input {
-    border-color: #fc8181;
-    background: rgba(252, 129, 129, 0.05);
-}
-
-.auth-form .form-group:has(.error-text) input:focus {
-    box-shadow: 0 0 0 3px rgba(252, 129, 129, 0.22);
-}
-
-/* Prevent white/yellow browser autofill flash on dark theme */
-.auth-form input:-webkit-autofill,
-.auth-form input:-webkit-autofill:hover,
-.auth-form input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #f7fafc;
-    -webkit-box-shadow: 0 0 0 1000px #141923 inset;
-    transition: background-color 5000s ease-in-out 0s;
-}
-
-.help-text {
-    color: #718096;
-    font-size: 0.78rem;
-    line-height: 1.5;
-}
-
-.help-text ul {
-    margin: 0.35rem 0 0;
-    padding-left: 1.15rem;
-}
-
-.error-text {
-    color: #fc8181;
+/* Fix Invisible Help Text & Bullet Lists */
+.form-help {
+    color: #94a3b8;
     font-size: 0.8rem;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
+    line-height: 1.5;
+    margin-top: 0.45rem;
 }
 
-.btn-full {
+.form-help ul {
+    margin: 0.35rem 0 0 0;
+    padding-left: 1.2rem;
+    color: #94a3b8;
+}
+
+.form-help li {
+    margin-bottom: 0.2rem;
+}
+
+/* Validation Errors */
+.form-error {
+    color: #f87171;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-top: 0.4rem;
+}
+
+.auth-alert {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid #ef4444;
+    color: #fca5a5;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    margin-bottom: 1.25rem;
+}
+
+/* Submit Button */
+.auth-submit-btn {
     width: 100%;
-    margin-top: 0.75rem;
-    padding: 0.85rem 1.25rem;
+    padding: 0.85rem;
+    margin-top: 0.5rem;
+    background: #e50914;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
     font-size: 1rem;
     font-weight: 600;
-    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
-.btn-full:hover {
-    filter: brightness(1.08);
-    box-shadow: 0 6px 20px rgba(99, 179, 237, 0.28);
+.auth-submit-btn:hover {
+    background: #f40612;
+    transform: translateY(-1px);
 }
 
-.btn-full:active {
-    transform: scale(0.985);
-}
-
+/* Footer */
 .auth-footer {
+    text-align: center;
     margin-top: 1.75rem;
     padding-top: 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    text-align: center;
+    border-top: 1px solid #334155;
+    color: #94a3b8;
     font-size: 0.9rem;
-    color: #a0aec0;
 }
 
-.auth-footer a {
-    color: #63b3ed;
+.auth-link {
+    color: #f87171;
     font-weight: 600;
     text-decoration: none;
-    transition: color 0.2s ease;
 }
 
-.auth-footer a:hover {
-    color: #90cdf4;
+.auth-link:hover {
     text-decoration: underline;
-}
-
-@keyframes authCardEnter {
-    from {
-        opacity: 0;
-        transform: translateY(14px) scale(0.98);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .auth-card,
-    .auth-form input,
-    .btn-full {
-        animation: none;
-        transition: none;
-    }
 }

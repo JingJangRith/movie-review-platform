@@ -1,21 +1,52 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-    Register
+{% block title %}Register | Movie Review Platform{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 {% endblock %}
 
 {% block content %}
-    <h1>Create an Account</h1>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2 class="auth-title">Create an Account</h2>
+            <p class="auth-subtitle">Join our community of passionate movie critics.</p>
+        </div>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+        <form method="post" class="auth-form">
+            {% csrf_token %}
 
-        <button type="submit">Register</button>
-    </form>
+            {% if form.non_field_errors %}
+                <div class="auth-alert">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
-    <p>
-        Already registered?
-        <a href="{% url 'login' %}">Login here</a>.
-    </p>
+            {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="form-help">{{ field.help_text|safe }}</div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="form-error">
+                            {{ field.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <button type="submit" class="auth-submit-btn">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account? <a href="{% url 'login' %}" class="auth-link">Login here</a></p>
+        </div>
+    </div>
+</div>
 {% endblock %}
