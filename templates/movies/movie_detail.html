@@ -1,66 +1,104 @@
+
 {% extends 'base.html' %}
 {% load static %}
+
+{% block title %}
+    {{ movie.title }}
+{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/movie_detail.css' %}">
 {% endblock %}
 
 {% block content %}
+
 <div class="movie-detail-container">
-    <!-- Hero Header / Cinematic Banner Section -->
-    <div class="movie-hero">
+
+    {% if movie.poster_url %}
+        <div
+            class="movie-detail-backdrop"
+            style="background-image: url('{{ movie.poster_url }}');"
+            aria-hidden="true">
+        </div>
+    {% endif %}
+
+    <!-- Movie Hero Section -->
+    <section class="movie-hero">
+
         <div class="movie-poster-wrapper">
             {% if movie.poster_url %}
-                <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="detail-poster">
+                <img
+                    src="{{ movie.poster_url }}"
+                    alt="{{ movie.title }} poster"
+                    class="detail-poster">
             {% else %}
-                <div class="no-poster">No Image Available</div>
+                <div class="no-poster">
+                    <span>🎬</span>
+                    <p>No Image Available</p>
+                </div>
             {% endif %}
         </div>
 
         <div class="movie-meta-info">
+
+            <span class="detail-eyebrow">NOW SHOWING</span>
+
             <h1 class="detail-title">{{ movie.title }}</h1>
-            
+
             <div class="movie-sub-info">
-                <span class="year-badge">{{ movie.release_year }}</span>
+                <span class="year-badge">
+                    {{ movie.release_year }}
+                </span>
+
                 {% if movie.genre %}
-                    <span class="genre-badge">{{ movie.genre }}</span>
+                    <span class="genre-badge">
+                        {{ movie.genre }}
+                    </span>
                 {% endif %}
             </div>
 
             <div class="info-group">
                 <h3>Synopsis</h3>
+
                 <p class="detail-description">
                     {{ movie.description|default:"No description available for this movie yet." }}
                 </p>
             </div>
+
         </div>
 
-        <div class="movie-credits-sidebar">
+        <aside class="movie-credits-sidebar">
+
             {% if movie.director %}
-            <div class="credit-block">
-                <span class="credit-label">DIRECTED BY</span>
-                <span class="credit-name">{{ movie.director }}</span>
-            </div>
+                <div class="credit-block">
+                    <span class="credit-label">DIRECTED BY</span>
+                    <span class="credit-name">
+                        {{ movie.director }}
+                    </span>
+                </div>
             {% endif %}
-            
+
             <div class="credit-block">
                 <span class="credit-label">STARRING</span>
                 <span class="credit-name">Cast & Crew</span>
             </div>
-        </div>
-    </div>
 
-    <!-- Action Bar & Temperature Rating Section -->
-    <div class="movie-action-bar">
-        <div class="action-buttons">
-            <button class="action-btn"><span class="icon">▶</span> Trailer</button>
-            <button class="action-btn"><span class="icon">+</span> Watchlist</button>
-            <button class="action-btn"><span class="icon">⋯</span> More</button>
+        </aside>
+
+    </section>
+
+    <!-- Movie Temperature / Rating Section -->
+    <section class="movie-action-bar">
+
+        <div class="action-description">
+            <span class="action-small-label">MOVIE EXPERIENCE</span>
+            <h2>Discover what audiences think</h2>
         </div>
-        
-        <!-- Corrected Temperature Score Display -->
+
         <div class="temperature-display">
+
             <div class="temp-icon">🌡️</div>
+
             <div class="temp-info">
                 <span class="temp-value">
                     {% if average_temperature is not None %}
@@ -74,48 +112,111 @@
                     {{ temperature_category }}
                 </span>
             </div>
+
         </div>
-    </div>
 
-    <!-- Reviews Section -->
-    <div class="reviews-section-header">
-        <h3>Community Opinions</h3>
-        {% if user.is_authenticated %}
+    </section>
 
-            {% if not user_reviewed %}
-                <a href="{% url 'review_create' movie.pk %}"
-                class="btn-add-review">
-                    + Add Review
-                </a>
-            {% else %}
-                <span class="btn-add-review">
-                    You have already reviewed this movie
-                </span>
-            {% endif %}
+    <!-- Community Reviews -->
+    <section class="reviews-section">
 
-        {% else %}
-            <a href="{% url 'login' %}" class="btn-add-review">
-                Login to Review
-            </a>
-        {% endif %}
-    </div>
+        <div class="reviews-section-header">
 
-    <div class="reviews-container">
-        {% for review in reviews %}
-        <div class="review-card">
-            <div class="review-header">
-                <span class="reviewer-name">{{ review.user.username }}</span>
-                <span class="review-rating">
-                    🌡️ {{ review.rating }}°
-                </span>
+            <div>
+                <span class="section-eyebrow">COMMUNITY</span>
+                <h2>Community Opinions</h2>
+                <p>Read what other viewers think about this movie.</p>
             </div>
-            <p class="review-comment">{{ review.comment }}</p>
+
+            <div class="review-action">
+
+                {% if user.is_authenticated %}
+
+                    {% if not user_reviewed %}
+                        <a
+                            href="{% url 'review_create' movie.pk %}"
+                            class="btn-add-review">
+                            <span>+</span> Add Review
+                        </a>
+                    {% else %}
+                        <span class="already-reviewed">
+                            ✓ You have already reviewed this movie
+                        </span>
+                    {% endif %}
+
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-add-review">
+                        Login to Review
+                    </a>
+                {% endif %}
+
+            </div>
+
         </div>
-        {% empty %}
-        <div class="empty-reviews">
-            <p>No reviews yet. Be the first to share your opinion!</p>
+
+        <div class="reviews-container">
+
+            {% for review in reviews %}
+
+                <article class="review-card">
+
+                    <div class="review-header">
+
+                        <div class="review-user-info">
+                            <div class="review-avatar">
+                                {{ review.user.username|first|upper }}
+                            </div>
+
+                            <div>
+                                <h3 class="reviewer-name">
+                                    {{ review.user.username }}
+                                </h3>
+                                <span class="review-user-label">
+                                    Movie Viewer
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="review-rating">
+                            🌡️ {{ review.rating }}°
+                        </span>
+
+                    </div>
+
+                    <p class="review-comment">
+                        {{ review.comment|linebreaksbr }}
+                    </p>
+
+                    <div class="review-footer">
+                        <span>Community Review</span>
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="empty-reviews">
+                    <div class="empty-reviews-icon">💬</div>
+                    <h3>No Reviews Yet</h3>
+                    <p>
+                        Be the first to share your opinion about
+                        {{ movie.title }}.
+                    </p>
+                </div>
+
+            {% endfor %}
+
         </div>
-        {% endfor %}
+
+    </section>
+
+    <!-- Back to Movie List -->
+    <div class="back-to-movies">
+        <a href="{% url 'movie_list' %}">
+            <span>←</span> Back to Movies
+        </a>
     </div>
+
 </div>
+
 {% endblock %}
