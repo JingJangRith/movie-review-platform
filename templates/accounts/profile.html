@@ -57,14 +57,14 @@
                 <span class="stat-label">Average Temperature Given</span>
 
                 <strong class="stat-number">
-                    {% if average_rating %}
+                    {% if average_rating is not None %}
                         {{ average_rating|floatformat:1 }}°
                     {% else %}
                         —
                     {% endif %}
                 </strong>
 
-                {% if not average_rating %}
+                {% if average_rating is None %}
                     <small>No reviews yet</small>
                 {% endif %}
             </div>
